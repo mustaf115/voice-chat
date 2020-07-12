@@ -1,0 +1,4 @@
+<script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+Chat
+<input id="send" type="text" placeholder="Send message...">
+<div id="msgs"></div>
