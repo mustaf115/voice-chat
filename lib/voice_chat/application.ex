@@ -17,7 +17,8 @@ defmodule VoiceChat.Application do
       VoiceChatWeb.Endpoint,
       # Start a worker by calling: VoiceChat.Worker.start_link(arg)
       # {VoiceChat.Worker, arg}
-      {VoiceChatWeb.Messages, :queue.new}
+      {VoiceChatWeb.Messages, :queue.new},
+      VoiceChatWeb.Presence
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

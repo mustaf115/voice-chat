@@ -17,7 +17,13 @@ defmodule VoiceChatWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
-    get "/chat", ChatController, :index
+    resources "/session", SessionController, only: [:create, :delete], singleton: true
+  end
+
+  scope "/chat", VoiceChatWeb do
+    pipe_through [:browser, :authenticate_user]
+
+    get "/", ChatController, :index
   end
 
   # Other scopes may use custom stacks.
@@ -38,6 +44,19 @@ defmodule VoiceChatWeb.Router do
     scope "/" do
       pipe_through :browser
       live_dashboard "/dashboard", metrics: VoiceChatWeb.Telemetry
+    end
+  end
+
+  defp authenticate_user(conn, _) do
+    case get_session(conn, :user_id) do
+      nil ->
+        conn
+        |> Phoenix.Controller.put_flash(:error, "Login required")
+        |> Phoenix.Controller.redirect(to: "/")
+        |> halt()
+      user_id ->
+        conn
+        |> assign(:user_token, Phoenix.Token.encrypt(VoiceChatWeb.Endpoint, "user_token", user_id))
     end
   end
 end

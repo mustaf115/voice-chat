@@ -1,4 +1,6 @@
-<script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
 Chat
-<input id="send" type="text" placeholder="Send message...">
+<form>
+  <input id="user_token" type="text" style="display: none;" readonly value="<%= @user_token %>">
+  <input id="send" type="text" placeholder="Send message...">
+</form>
 <div id="msgs"></div>
