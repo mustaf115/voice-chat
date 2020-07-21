@@ -48,15 +48,14 @@ defmodule VoiceChatWeb.Router do
   end
 
   defp authenticate_user(conn, _) do
-    case get_session(conn, :user_id) do
+    case get_session(conn, :user_email) do
       nil ->
         conn
         |> Phoenix.Controller.put_flash(:error, "Login required")
         |> Phoenix.Controller.redirect(to: "/")
         |> halt()
-      user_id ->
+      user_email ->
         conn
-        |> assign(:user_token, Phoenix.Token.encrypt(VoiceChatWeb.Endpoint, "user_token", user_id))
     end
   end
 end

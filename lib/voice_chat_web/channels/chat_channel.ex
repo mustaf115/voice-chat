@@ -11,7 +11,7 @@ defmodule VoiceChatWeb.ChatChannel do
   end
 
   def handle_in("new_msg", %{"body" => body}, socket) do
-    messages = Messages.in_msg(body)
+    messages = Messages.in_msg(body, socket.assigns.user_email)
     broadcast! socket, "new_msg", %{body: messages}
     {:noreply, socket}
   end

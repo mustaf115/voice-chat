@@ -16,9 +16,15 @@ defmodule VoiceChatWeb.UserSocket do
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
   @impl true
-  def connect(_params, socket, conn) do
-    IO.inspect(conn)
-    {:ok, socket}
+  def connect(%{"token" => token}, socket, _conn) do
+    case Phoenix.Token.verify(VoiceChatWeb.Endpoint, "user_email", token, max_age: 86400) do
+      {:ok, user_email} ->
+        IO.inspect(user_email, label: "okay")
+        {:ok, assign(socket, :user_email, user_email)}
+      {:error, err} ->
+        IO.inspect(err, label: "not okay")
+        :error
+    end
   end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
@@ -32,5 +38,5 @@ defmodule VoiceChatWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(_socket), do: nil
+  def id(socket), do: socket.assigns.user_email
 end

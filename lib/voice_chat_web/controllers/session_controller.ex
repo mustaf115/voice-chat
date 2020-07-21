@@ -12,6 +12,7 @@ defmodule VoiceChatWeb.SessionController do
       {:ok, user} ->
         conn
         |> put_session(:user_id, user.id)
+        |> put_session(:user_email, user.email)
         |> configure_session(renew: true)
         |> redirect(to: "/chat")
       {:error, :unauthorized} ->

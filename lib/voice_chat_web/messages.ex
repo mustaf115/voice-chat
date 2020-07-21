@@ -7,8 +7,8 @@ defmodule VoiceChatWeb.Messages do
     GenServer.start_link(__MODULE__, default, name: __MODULE__)
   end
 
-  def in_msg(msg) do
-    GenServer.call @name, {:in, msg}
+  def in_msg(content, author) do
+    GenServer.call @name, {:in, %{content: content, author: author}}
   end
 
   def get_msgs() do
