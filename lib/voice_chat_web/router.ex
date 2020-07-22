@@ -17,6 +17,8 @@ defmodule VoiceChatWeb.Router do
     pipe_through :browser
 
     get "/", PageController, :index
+    get "/signup", UserController, :new
+    resources "/users", UserController, only: [:create, :delete]
     resources "/session", SessionController, only: [:create, :delete], singleton: true
   end
 

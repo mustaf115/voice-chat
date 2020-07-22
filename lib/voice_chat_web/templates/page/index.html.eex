@@ -1,1 +1,3 @@
+<h2>Sign in:</h2>
 <%= render VoiceChatWeb.SessionView, "_form.html", assigns %>
+<%= link "Or create an account", to: Routes.user_path(@conn, :new) %>
