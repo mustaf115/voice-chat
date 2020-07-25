@@ -11,7 +11,7 @@ defmodule VoiceChatWeb.UserController do
       {:ok, user} ->
         conn
         |> assign(:user, user)
-        |> redirect(to: "chat")
+        |> redirect(to: Routes.page_path(conn, :index))
       {:error, %Ecto.Changeset{} = changeset} ->
         conn
         |> put_flash(:error, "Invalid input")
@@ -20,6 +20,13 @@ defmodule VoiceChatWeb.UserController do
   end
 
   def delete(conn, %{id: id}) do
-
+    case Accounts.get_user!(id) do
+      {:ok, user} ->
+        Accounts.delete_user(user)
+      {:error, _} ->
+        conn
+        |> put_flash(:error, "something went wrong")
+        |> redirect("/")
+    end
   end
 end

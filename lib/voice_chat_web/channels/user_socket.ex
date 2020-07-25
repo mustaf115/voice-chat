@@ -2,7 +2,7 @@ defmodule VoiceChatWeb.UserSocket do
   use Phoenix.Socket
 
   ## Channels
-  channel "chat:*", VoiceChatWeb.ChatChannel
+  channel "chat:lobby", VoiceChatWeb.ChatChannel
 
   # Socket params are passed from the client and can
   # be used to verify and authenticate a user. After
@@ -17,10 +17,9 @@ defmodule VoiceChatWeb.UserSocket do
   # performing token verification on connect.
   @impl true
   def connect(%{"token" => token}, socket, _conn) do
-    case Phoenix.Token.verify(VoiceChatWeb.Endpoint, "user_email", token, max_age: 86400) do
-      {:ok, user_email} ->
-        IO.inspect(user_email, label: "okay")
-        {:ok, assign(socket, :user_email, user_email)}
+    case Phoenix.Token.verify(VoiceChatWeb.Endpoint, "user", token, max_age: 86400) do
+      {:ok, user} ->
+        {:ok, assign(socket, [user_id: user.id, username: user.username])}
       {:error, err} ->
         IO.inspect(err, label: "not okay")
         :error
@@ -38,5 +37,5 @@ defmodule VoiceChatWeb.UserSocket do
   #
   # Returning `nil` makes this socket anonymous.
   @impl true
-  def id(socket), do: socket.assigns.user_email
+  def id(socket), do: to_string socket.assigns.user_id
 end

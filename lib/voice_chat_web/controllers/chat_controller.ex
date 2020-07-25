@@ -4,7 +4,7 @@ defmodule VoiceChatWeb.ChatController do
   def index(conn, _params) do
     # IO.inspect(conn, label: "AAAAAAAAA")
     conn
-    |> assign(:user_email, get_session(conn, :user_email))
+    |> assign(:user, VoiceChat.Accounts.get_user!(get_session(conn, :user_id)))
     |> render(:index)
   end
 end

@@ -1,0 +1,12 @@
+.chat-container {
+  display: flex;
+}
+
+.chat {
+  flex: 3;
+}
+
+.users-online {
+  padding: .2em;
+  flex: 1
+}

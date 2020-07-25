@@ -49,9 +49,9 @@ defmodule VoiceChat.Accounts do
       {:error, %Ecto.Changeset{}}
 
   """
-  def create_user(attrs \\ %{}) do
+  def create_user(%{"user" => user} \\ %{}) do
     %User{}
-    |> User.changeset(attrs)
+    |> User.changeset(Map.merge(user, %{"password_hash" => user["password"]}))
     |> Repo.insert()
   end
 
@@ -103,6 +103,15 @@ defmodule VoiceChat.Accounts do
   end
 
   def login(email, password) do
-    {:ok, %{email: email, password: password, id: 0}}
+    case Repo.get_by(User, email: email) do
+      %User{} = user ->
+        if user.password_hash == password do
+          {:ok, user}
+        else
+          {:error, "Bad email/password"}
+        end
+      nil ->
+        {:error, "User not found"}
+    end
   end
 end

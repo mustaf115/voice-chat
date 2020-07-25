@@ -1,7 +1,15 @@
-Chat
-<%= @user_email %>
-<form>
-  <input id="user_token" type="text" style="display: none;" readonly value="<%= Phoenix.Token.sign(VoiceChatWeb.Endpoint, "user_email", @user_email) %>">
-  <input id="message" type="text" placeholder="Send message...">
-</form>
-<div id="msgs"></div>
+<main class="container chat-container">
+  <div class="chat">
+    <%= form_for @conn, Routes.session_path(@conn, :delete), [method: :delete], fn f -> %>
+      <%= submit "Logout" %>
+    <% end %>
+    <form>
+      <input id="user_token" type="text" style="display: none;" readonly value="<%= Phoenix.Token.sign(VoiceChatWeb.Endpoint, "user", @user) %>">
+      <input id="message" type="text" placeholder="Send message...">
+    </form>
+    <div id="msgs"></div>
+  </div>
+  <aside class="users-online">
+    <ul id="online"></ul>
+  </aside>
+</main>

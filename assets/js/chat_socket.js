@@ -1,16 +1,27 @@
-import {Socket} from "phoenix"
+import {Socket, Presence} from "phoenix"
 
 
 const messageInput = document.querySelector('#message')
 const token = document.querySelector('#user_token').value
 
 let socket = new Socket("/socket", {params: {token}})
-socket.connect()
 
 let channel = socket.channel("chat:lobby", {})
+let presence = new Presence(channel)
+
 let msgDiv = document.querySelector('#msgs')
 
-const drawChat = msgs => {
+const renderOnlineUsers = presence => {
+  let response = ""
+
+  presence.list((id) => {
+    response += `<br>${id}</br>`
+  })
+
+  document.querySelector('#online').innerHTML = response
+}
+
+const renderChat = msgs => {
   console.log(msgs)
   msgDiv.innerHTML = ''
   msgs.forEach( msg => {
@@ -19,11 +30,11 @@ const drawChat = msgs => {
 }
 
 channel.join()
-  .receive("ok", ({msgs}) => { drawChat(msgs) })
+  .receive("ok", ({msgs}) => { renderChat(msgs) })
   .receive("error", resp => { console.log("Unable to join", resp) })
 
 channel.on('new_msg', ({body}) => {
-  drawChat(body)
+  renderChat(body)
 })
 
 messageInput.addEventListener('keypress', e => {
@@ -33,6 +44,8 @@ messageInput.addEventListener('keypress', e => {
   }
 })
 
+socket.connect()
+presence.onSync(() => renderOnlineUsers(presence))
 // const chat = () => {
 //   let socket = new Socket("/socket", {params: {token}})
 //

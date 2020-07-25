@@ -23,7 +23,7 @@ defmodule VoiceChatWeb.Router do
   end
 
   scope "/chat", VoiceChatWeb do
-    pipe_through [:browser, :authenticate_user]
+    pipe_through [:browser, :authenticate_user, :prevent_caching]
 
     get "/", ChatController, :index
   end
@@ -50,7 +50,7 @@ defmodule VoiceChatWeb.Router do
   end
 
   defp authenticate_user(conn, _) do
-    case get_session(conn, :user_email) do
+    case get_session(conn, :user_id) do
       nil ->
         conn
         |> Phoenix.Controller.put_flash(:error, "Login required")
@@ -59,5 +59,12 @@ defmodule VoiceChatWeb.Router do
       user_email ->
         conn
     end
+  end
+
+  defp prevent_caching(conn, _) do
+    conn
+    |> put_resp_header("cache-control", "no-cache, no-store, must-revalidate")
+    |> put_resp_header("pragma", "no-cache")
+    |> put_resp_header("expires", "0")
   end
 end
