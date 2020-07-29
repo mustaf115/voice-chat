@@ -8,13 +8,20 @@ defmodule VoiceChatWeb.ChatChannel do
     {:ok, %{msgs: Messages.get_msgs}, socket}
   end
 
-  def join("chat:" <> _id, _params, _socket) do
-    {:error, %{reason: "unauthorized"}}
+  def join("chat:private", _params, _socket) do
+    {:ok, socket}
   end
 
   def handle_in("new_msg", %{"body" => body}, socket) do
     messages = Messages.in_msg(body, socket.assigns.username)
     broadcast! socket, "new_msg", %{body: messages}
+    {:noreply, socket}
+  end
+
+  def handle_out("new_msg", msg, socket) do
+    unless socket.assigns.user_id == msg.user_id do
+      push(socket, "new_msg", msg)
+    end
     {:noreply, socket}
   end
 
